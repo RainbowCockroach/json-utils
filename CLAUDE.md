@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-JSON Utils is a client-side React web application for common JSON processing operations. The app provides 5 core functions (stringify, parse, escape, unescape, compare) with a chaining feature that allows users to pipe output from one function to another. Built with React, Vite, and deployed to GitHub Pages.
+JSON Utils is a client-side React web application for common JSON processing operations. The app provides 7 core functions (stringify, parse, escape, unescape, compare, decode-url, format-json) with a chaining feature that allows users to pipe output from one function to another. Built with React, Vite, and deployed to GitHub Pages.
 
 ## Development Commands
 
@@ -31,7 +31,7 @@ npm run deploy       # Build and deploy to GitHub Pages (via gh-pages package)
 **Core Processing Logic**: `src/utils/jsonProcessors.js`
 - All JSON processing functions in one module
 - Handles complete JSON escape sequence specification including HTML content
-- Functions: `stringifyJSON()`, `parseJSON()`, `escapeJSON()`, `unescapeJSON()`, `compareJSON()`
+- Functions: `stringifyJSON()`, `parseJSON()`, `escapeJSON()`, `unescapeJSON()`, `compareJSON()`, `decodeURL()`, `formatJSON()`
 
 **Chaining System**: `src/components/PipeButtons.jsx`
 - Implements function-to-function data transfer
@@ -40,7 +40,7 @@ npm run deploy       # Build and deploy to GitHub Pages (via gh-pages package)
 
 **Routing**: `src/App.jsx`
 - React Router with basename for GitHub Pages deployment
-- 5 function routes: `/stringify`, `/parse`, `/escape`, `/unescape`, `/compare`
+- 7 function routes: `/stringify`, `/parse`, `/escape`, `/unescape`, `/compare`, `/decode-url`, `/format-json`
 
 ### Page Pattern
 Each function page follows the same structure:
@@ -64,6 +64,10 @@ Each function page follows the same structure:
 - Unicode: `\uXXXX` sequences
 
 **Compare Function**: Deep comparison that extracts all nested field paths and shows missing fields in each JSON object as a summary list.
+
+**Decode URL Function**: Decodes URL-encoded strings using `decodeURIComponent()`. Converts percent-encoded characters back to their original form (e.g., `%20` → space).
+
+**Format JSON Function**: Pretty-prints JSON with proper indentation. Parses input JSON and formats it with 2-space indentation for readability.
 
 ## Important Implementation Details
 
