@@ -1,0 +1,177 @@
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #213547;
+  background-color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.main-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.menu-button {
+  padding: 2rem 1rem;
+  border: 2px solid #646cff;
+  border-radius: 8px;
+  background: white;
+  color: #646cff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.menu-button:hover {
+  background: #646cff;
+  color: white;
+}
+
+.function-page {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.input-section, .output-section {
+  margin: 1rem 0;
+}
+
+.input-section label, .output-section label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.json-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.json-textarea:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.process-button {
+  background: #646cff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 1rem 0;
+}
+
+.process-button:hover {
+  background: #535bf2;
+}
+
+.process-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.copy-button, .pipe-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #646cff;
+  background: white;
+  color: #646cff;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.copy-button:hover, .pipe-button:hover {
+  background: #646cff;
+  color: white;
+}
+
+.pipe-select {
+  padding: 0.5rem;
+  border: 1px solid #646cff;
+  border-radius: 4px;
+}
+
+.error-message {
+  color: #d63384;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.nav {
+  margin-bottom: 2rem;
+}
+
+.nav a {
+  color: #646cff;
+  text-decoration: none;
+  margin-right: 1rem;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+}
+
+.compare-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.compare-result {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+  margin-top: 1rem;
+}
+
+.missing-fields {
+  margin: 0.5rem 0;
+}
+
+.missing-fields strong {
+  color: #d63384;
+}
