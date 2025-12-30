@@ -45,6 +45,12 @@ function Home() {
             <h3>Format JSON</h3>
           </div>
         </Link>
+
+        <Link to="/js-to-json" className="menu-button">
+          <div>
+            <h3>JS Object to JSON</h3>
+          </div>
+        </Link>
       </div>
     </div>
   );

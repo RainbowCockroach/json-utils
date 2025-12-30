@@ -83,6 +83,27 @@ export function formatJSON(input) {
   }
 }
 
+export function jsObjectToJSON(input) {
+  try {
+    // Remove any leading/trailing whitespace
+    const trimmedInput = input.trim()
+
+    if (!trimmedInput) {
+      throw new Error('Input is empty')
+    }
+
+    // Attempt to evaluate the JavaScript object literal safely
+    // This wraps the input in parentheses to ensure object literals are parsed correctly
+    const func = new Function('return (' + trimmedInput + ')')
+    const jsObject = func()
+
+    // Convert the JavaScript object to JSON string
+    return JSON.stringify(jsObject, null, 2)
+  } catch (error) {
+    throw new Error('Invalid JavaScript object: ' + error.message)
+  }
+}
+
 function getAllKeys(obj, prefix = '') {
   let keys = []
 

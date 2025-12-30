@@ -8,6 +8,7 @@ import UnescapePage from './pages/UnescapePage'
 import ComparePage from './pages/ComparePage'
 import DecodeUrlPage from './pages/DecodeUrlPage'
 import FormatJsonPage from './pages/FormatJsonPage'
+import JsObjectToJsonPage from './pages/JsObjectToJsonPage'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/compare" element={<ComparePage />} />
           <Route path="/decode-url" element={<DecodeUrlPage />} />
           <Route path="/format-json" element={<FormatJsonPage />} />
+          <Route path="/js-to-json" element={<JsObjectToJsonPage />} />
         </Routes>
       </Layout>
     </Router>
