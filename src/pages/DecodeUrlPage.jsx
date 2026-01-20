@@ -44,32 +44,34 @@ function DecodeUrlPage() {
       <h2>Decode URL</h2>
       <p>Decode URL-encoded strings back to their original form.</p>
 
-      <div className="input-section">
-        <label htmlFor="input">URL-Encoded Input:</label>
-        <textarea
-          id="input"
-          className="json-textarea"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Enter URL-encoded string, e.g.: Hello%20World%21"
-        />
-        {error && <div className="error-message">{error}</div>}
+      <div className="io-container">
+        <div className="input-section">
+          <label htmlFor="input">URL-Encoded Input:</label>
+          <textarea
+            id="input"
+            className="json-textarea"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Enter URL-encoded string, e.g.: Hello%20World%21"
+          />
+          {error && <div className="error-message">{error}</div>}
+        </div>
+
+        <div className="output-section">
+          <label htmlFor="output">Decoded Output:</label>
+          <textarea
+            id="output"
+            className="json-textarea"
+            value={output}
+            readOnly
+            placeholder="Decoded text will appear here..."
+          />
+        </div>
       </div>
 
       <button className="process-button" onClick={handleProcess}>
         Decode URL
       </button>
-
-      <div className="output-section">
-        <label htmlFor="output">Decoded Output:</label>
-        <textarea
-          id="output"
-          className="json-textarea"
-          value={output}
-          readOnly
-          placeholder="Decoded text will appear here..."
-        />
-      </div>
 
       {output && (
         <PipeButtons

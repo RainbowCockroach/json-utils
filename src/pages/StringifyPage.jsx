@@ -44,32 +44,34 @@ function StringifyPage() {
       <h2>Stringify JSON</h2>
       <p>Convert a JSON object to a formatted JSON string.</p>
 
-      <div className="input-section">
-        <label htmlFor="input">JSON Input:</label>
-        <textarea
-          id="input"
-          className="json-textarea"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder='Enter JSON object, e.g.: {"name": "John", "age": 30}'
-        />
-        {error && <div className="error-message">{error}</div>}
+      <div className="io-container">
+        <div className="input-section">
+          <label htmlFor="input">JSON Input:</label>
+          <textarea
+            id="input"
+            className="json-textarea"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder='Enter JSON object, e.g.: {"name": "John", "age": 30}'
+          />
+          {error && <div className="error-message">{error}</div>}
+        </div>
+
+        <div className="output-section">
+          <label htmlFor="output">Stringified Output:</label>
+          <textarea
+            id="output"
+            className="json-textarea"
+            value={output}
+            readOnly
+            placeholder="Stringified JSON will appear here..."
+          />
+        </div>
       </div>
 
       <button className="process-button" onClick={handleProcess}>
         Stringify JSON
       </button>
-
-      <div className="output-section">
-        <label htmlFor="output">Stringified Output:</label>
-        <textarea
-          id="output"
-          className="json-textarea"
-          value={output}
-          readOnly
-          placeholder="Stringified JSON will appear here..."
-        />
-      </div>
 
       {output && (
         <PipeButtons

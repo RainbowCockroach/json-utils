@@ -44,32 +44,34 @@ function UnescapePage() {
       <h2>Unescape JSON</h2>
       <p>Unescape a JSON string by converting escape sequences back to their original characters.</p>
 
-      <div className="input-section">
-        <label htmlFor="input">Escaped Text Input:</label>
-        <textarea
-          id="input"
-          className="json-textarea"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={`Enter escaped text, e.g.:\n{\\"name\\": \\"John\\", \\"message\\": \\"Hello\\\\nWorld\\"}`}
-        />
-        {error && <div className="error-message">{error}</div>}
+      <div className="io-container">
+        <div className="input-section">
+          <label htmlFor="input">Escaped Text Input:</label>
+          <textarea
+            id="input"
+            className="json-textarea"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={`Enter escaped text, e.g.:\n{\\"name\\": \\"John\\", \\"message\\": \\"Hello\\\\nWorld\\"}`}
+          />
+          {error && <div className="error-message">{error}</div>}
+        </div>
+
+        <div className="output-section">
+          <label htmlFor="output">Unescaped Output:</label>
+          <textarea
+            id="output"
+            className="json-textarea"
+            value={output}
+            readOnly
+            placeholder="Unescaped text will appear here..."
+          />
+        </div>
       </div>
 
       <button className="process-button" onClick={handleProcess}>
         Unescape Text
       </button>
-
-      <div className="output-section">
-        <label htmlFor="output">Unescaped Output:</label>
-        <textarea
-          id="output"
-          className="json-textarea"
-          value={output}
-          readOnly
-          placeholder="Unescaped text will appear here..."
-        />
-      </div>
 
       {output && (
         <PipeButtons

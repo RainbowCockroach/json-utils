@@ -44,32 +44,34 @@ function EscapePage() {
       <h2>Escape JSON</h2>
       <p>Escape a JSON string for embedding in code or other strings.</p>
 
-      <div className="input-section">
-        <label htmlFor="input">Text Input:</label>
-        <textarea
-          id="input"
-          className="json-textarea"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={`Enter text to escape, e.g.:\n{"name": "John", "message": "Hello\\nWorld"}`}
-        />
-        {error && <div className="error-message">{error}</div>}
+      <div className="io-container">
+        <div className="input-section">
+          <label htmlFor="input">Text Input:</label>
+          <textarea
+            id="input"
+            className="json-textarea"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={`Enter text to escape, e.g.:\n{"name": "John", "message": "Hello\\nWorld"}`}
+          />
+          {error && <div className="error-message">{error}</div>}
+        </div>
+
+        <div className="output-section">
+          <label htmlFor="output">Escaped Output:</label>
+          <textarea
+            id="output"
+            className="json-textarea"
+            value={output}
+            readOnly
+            placeholder="Escaped text will appear here..."
+          />
+        </div>
       </div>
 
       <button className="process-button" onClick={handleProcess}>
         Escape Text
       </button>
-
-      <div className="output-section">
-        <label htmlFor="output">Escaped Output:</label>
-        <textarea
-          id="output"
-          className="json-textarea"
-          value={output}
-          readOnly
-          placeholder="Escaped text will appear here..."
-        />
-      </div>
 
       {output && (
         <PipeButtons

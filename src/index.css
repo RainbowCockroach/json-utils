@@ -17,16 +17,27 @@ body {
 }
 
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0.5rem 1rem;
   text-align: center;
 }
 
 .container {
-  max-width: 800px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0;
+}
+
+.container header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.container header h1 {
+  margin: 0;
+  font-size: 1.2rem;
 }
 
 .main-menu {
@@ -54,31 +65,69 @@ body {
 }
 
 .function-page {
-  max-width: 800px;
   margin: 0 auto;
   text-align: left;
 }
 
+.function-page h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.function-page p {
+  margin: 0 0 0.25rem 0;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.io-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .io-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .io-container .input-section,
+  .io-container .output-section {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .io-container .json-textarea {
+    min-height: calc(100vh - 180px);
+    flex: 1;
+  }
+}
+
 .input-section,
 .output-section {
-  margin: 1rem 0;
+  margin: 0.25rem 0;
 }
 
 .input-section label,
 .output-section label {
   display: block;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.15rem;
+  font-size: 0.85rem;
 }
 
 .json-textarea {
   width: 100%;
   min-height: 200px;
-  padding: 1rem;
-  border: 2px solid #ddd;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
   border-radius: 4px;
   font-family: "Consolas", "Monaco", monospace;
-  font-size: 14px;
+  font-size: 13px;
   resize: vertical;
 }
 
@@ -91,11 +140,11 @@ body {
   background: #646cff;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 0.4rem 1rem;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.85rem;
   cursor: pointer;
-  margin: 1rem 0;
+  margin: 0.25rem 0;
 }
 
 .process-button:hover {
@@ -109,9 +158,9 @@ body {
 
 .actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   align-items: center;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .copy-button,
@@ -145,7 +194,7 @@ body {
 }
 
 .nav {
-  margin-bottom: 2rem;
+  margin: 0;
 }
 
 .nav a {

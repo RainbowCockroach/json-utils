@@ -44,32 +44,34 @@ function FormatJsonPage() {
       <h2>Format JSON</h2>
       <p>Pretty-print JSON with proper indentation and formatting.</p>
 
-      <div className="input-section">
-        <label htmlFor="input">JSON Input:</label>
-        <textarea
-          id="input"
-          className="json-textarea"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder='Enter JSON to format, e.g.: {"name":"John","age":30}'
-        />
-        {error && <div className="error-message">{error}</div>}
+      <div className="io-container">
+        <div className="input-section">
+          <label htmlFor="input">JSON Input:</label>
+          <textarea
+            id="input"
+            className="json-textarea"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder='Enter JSON to format, e.g.: {"name":"John","age":30}'
+          />
+          {error && <div className="error-message">{error}</div>}
+        </div>
+
+        <div className="output-section">
+          <label htmlFor="output">Formatted Output:</label>
+          <textarea
+            id="output"
+            className="json-textarea"
+            value={output}
+            readOnly
+            placeholder="Formatted JSON will appear here..."
+          />
+        </div>
       </div>
 
       <button className="process-button" onClick={handleProcess}>
         Format JSON
       </button>
-
-      <div className="output-section">
-        <label htmlFor="output">Formatted Output:</label>
-        <textarea
-          id="output"
-          className="json-textarea"
-          value={output}
-          readOnly
-          placeholder="Formatted JSON will appear here..."
-        />
-      </div>
 
       {output && (
         <PipeButtons
