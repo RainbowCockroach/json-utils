@@ -14,6 +14,9 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #root {
@@ -41,13 +44,15 @@ body {
 }
 
 .main-menu {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   margin: 2rem 0;
 }
 
 .menu-button {
+  width: 180px;
   padding: 1rem 1rem;
   border: none;
   border-radius: 8px;
