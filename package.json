@@ -11,10 +11,10 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "font-color-contrast": "^11.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.28.0",
+    "react18-json-view": "^0.2.10"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",

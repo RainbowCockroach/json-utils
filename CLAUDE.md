@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-JSON Utils is a client-side React web application for common JSON processing operations. The app provides 7 core functions (stringify, parse, escape, unescape, compare, decode-url, format-json) with a chaining feature that allows users to pipe output from one function to another. Built with React, Vite, and deployed to GitHub Pages.
+JSON Utils is a client-side React web application for common JSON processing operations. The app provides 9 tools (format, minify, stringify, parse, escape, unescape, decode-url, js-to-json, compare) with a chaining feature that allows users to pipe output from one function to another. Built with React, Vite, and deployed to GitHub Pages.
 
 ## Development Commands
 
@@ -22,33 +22,28 @@ npm run deploy       # Build and deploy to GitHub Pages (via gh-pages package)
 
 ### Application Structure
 - **Single Page App (SPA)**: React Router with basename `/json-utils` for GitHub Pages
-- **Function Pages**: Each JSON operation has its own route and component
-- **Chaining System**: Uses sessionStorage to pass data between functions
+- **Full-screen layout**: tab bar on top, one-line toolbar, input/output panes fill the rest. No home page: `/` redirects to `/format-json`
+- **Chaining System**: Uses sessionStorage to pass data between tools
 - **GitHub Pages Ready**: Includes SPA routing setup and GitHub Actions workflow
 
 ### Key Components
 
 **Core Processing Logic**: `src/utils/jsonProcessors.js`
-- All JSON processing functions in one module
-- Handles complete JSON escape sequence specification including HTML content
-- Functions: `stringifyJSON()`, `parseJSON()`, `escapeJSON()`, `unescapeJSON()`, `compareJSON()`, `decodeURL()`, `formatJSON()`
+- Pure text-in, text-out functions; each throws an Error with a short message on bad input
+- `stringifyJSON` turns a JSON document into one JSON string literal; `parseJSON` reverses it (unwrapping nested stringification)
+
+**Tool list and routing**: `src/App.jsx`
+- `TOOLS` maps each route to its label and processor; adding a single-input tool is one line there plus one in `PipeButtons.jsx`
+
+**Shared tool page**: `src/components/ToolPage.jsx`
+- Output updates live as you type; errors show in the toolbar
+- Object/array output renders as a collapsible tree (`react18-json-view`) with a Tree/Text toggle
+
+**Compare**: `src/pages/ComparePage.jsx` — three panes (A, B, result)
 
 **Chaining System**: `src/components/PipeButtons.jsx`
-- Implements function-to-function data transfer
-- Uses `sessionStorage.setItem('pipeInput', output)` to pass data
-- Each page checks for piped input on mount via `sessionStorage.getItem('pipeInput')`
-
-**Routing**: `src/App.jsx`
-- React Router with basename for GitHub Pages deployment
-- 7 function routes: `/stringify`, `/parse`, `/escape`, `/unescape`, `/compare`, `/decode-url`, `/format-json`
-
-### Page Pattern
-Each function page follows the same structure:
-1. Input textarea with piped input detection
-2. Process button that calls corresponding util function
-3. Output textarea with results
-4. Error handling with inline error messages
-5. PipeButtons component for chaining to other functions
+- "Send to" dropdown; `sessionStorage.setItem('pipeInput', output)` then navigate
+- Pages read `pipeInput` in their state initializer and remove it in an effect (safe under StrictMode)
 
 ### GitHub Pages Deployment
 - **Base URL Configuration**: `vite.config.js` sets `base: '/json-utils/'`
@@ -73,6 +68,6 @@ Each function page follows the same structure:
 
 - **sessionStorage**: Critical for chaining functionality - do not replace with other state management
 - **Router basename**: Must match GitHub Pages repository name for correct routing
-- **Error handling**: Uses inline error messages below input textareas
+- **Error handling**: Error message shown in the toolbar
 - **JSON processing**: All functions are pure and throw descriptive errors for invalid JSON
 - **Styling**: CSS-in-JS is not used; all styles in `src/index.css`

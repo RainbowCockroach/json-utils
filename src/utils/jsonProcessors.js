@@ -1,69 +1,55 @@
-// JSON Processing Functions
+// Pure text-in, text-out functions behind each tool. Each throws an Error with a short
+// message on bad input; the page shows that message in its toolbar.
 
-export function stringifyJSON(input) {
-  try {
-    const parsed = JSON.parse(input)
-    return JSON.stringify(parsed, null, 2)
-  } catch (error) {
-    throw new Error('Invalid JSON input: ' + error.message)
-  }
+// #region Config
+const UNESCAPE_MAP = { '"': '"', '\\': '\\', '/': '/', b: '\b', f: '\f', n: '\n', r: '\r', t: '\t' }
+// #endregion
+
+// #region Tools
+export function formatJSON(input) {
+  return JSON.stringify(parseOrThrow(input), null, 2)
 }
 
+export function minifyJSON(input) {
+  return JSON.stringify(parseOrThrow(input))
+}
+
+// JSON document → one JSON string literal, ready to paste into another JSON or code
+export function stringifyJSON(input) {
+  return JSON.stringify(JSON.stringify(parseOrThrow(input)))
+}
+
+// JSON string literal (possibly stringified several times) → formatted JSON document
 export function parseJSON(input) {
-  try {
-    const parsed = JSON.parse(input)
-    return JSON.stringify(parsed, null, 2)
-  } catch (error) {
-    throw new Error('Invalid JSON input: ' + error.message)
+  let value = parseOrThrow(input)
+  while (typeof value === 'string') {
+    try {
+      value = JSON.parse(value)
+    } catch {
+      break
+    }
   }
+  return JSON.stringify(value, null, 2)
 }
 
 export function escapeJSON(input) {
   return input
-    .replace(/\\/g, '\\\\')     // Escape backslashes (must be first)
-    .replace(/"/g, '\\"')       // Escape quotes
-    .replace(/\//g, '\\/')      // Escape forward slashes
-    .replace(/[\b]/g, '\\b')    // Escape backspace (literal \b character)
-    .replace(/\f/g, '\\f')      // Escape form feed
-    .replace(/\n/g, '\\n')      // Escape newlines
-    .replace(/\r/g, '\\r')      // Escape carriage returns
-    .replace(/\t/g, '\\t')      // Escape tabs
+    .replace(/\\/g, '\\\\') // must run first
+    .replace(/"/g, '\\"')
+    .replace(/\//g, '\\/')
+    .replace(/[\b]/g, '\\b')
+    .replace(/\f/g, '\\f')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t')
 }
 
+// One pass, so an escaped backslash followed by "n" stays a backslash and an "n"
 export function unescapeJSON(input) {
-  return input
-    .replace(/\\u([0-9a-fA-F]{4})/g, (match, hex) => {
-      return String.fromCharCode(parseInt(hex, 16))
-    })                        // Unescape unicode sequences
-    .replace(/\\b/g, '\b')    // Unescape backspace
-    .replace(/\\f/g, '\f')    // Unescape form feed
-    .replace(/\\n/g, '\n')    // Unescape newlines
-    .replace(/\\r/g, '\r')    // Unescape carriage returns
-    .replace(/\\t/g, '\t')    // Unescape tabs
-    .replace(/\\"/g, '"')     // Unescape quotes
-    .replace(/\\\//g, '/')    // Unescape forward slashes
-    .replace(/\\\\/g, '\\')   // Unescape backslashes (must be last)
-}
-
-export function compareJSON(json1, json2) {
-  try {
-    const obj1 = JSON.parse(json1)
-    const obj2 = JSON.parse(json2)
-
-    const keys1 = getAllKeys(obj1)
-    const keys2 = getAllKeys(obj2)
-
-    const missingFromObj1 = keys2.filter(key => !keys1.includes(key))
-    const missingFromObj2 = keys1.filter(key => !keys2.includes(key))
-
-    return {
-      missingFromFirst: missingFromObj1,
-      missingFromSecond: missingFromObj2,
-      identical: missingFromObj1.length === 0 && missingFromObj2.length === 0
-    }
-  } catch (error) {
-    throw new Error('Invalid JSON input: ' + error.message)
-  }
+  return input.replace(/\\(u[0-9a-fA-F]{4}|["\\/bfnrt])/g, (match, sequence) => {
+    if (sequence[0] === 'u') return String.fromCharCode(parseInt(sequence.slice(1), 16))
+    return UNESCAPE_MAP[sequence]
+  })
 }
 
 export function decodeURL(input) {
@@ -74,56 +60,57 @@ export function decodeURL(input) {
   }
 }
 
-export function formatJSON(input) {
-  try {
-    const parsed = JSON.parse(input)
-    return JSON.stringify(parsed, null, 2)
-  } catch (error) {
-    throw new Error('Invalid JSON input: ' + error.message)
-  }
-}
-
 export function jsObjectToJSON(input) {
+  const trimmedInput = input.trim()
+  if (!trimmedInput) throw new Error('Input is empty')
+
   try {
-    // Remove any leading/trailing whitespace
-    const trimmedInput = input.trim()
-
-    if (!trimmedInput) {
-      throw new Error('Input is empty')
-    }
-
-    // Attempt to evaluate the JavaScript object literal safely
-    // This wraps the input in parentheses to ensure object literals are parsed correctly
-    const func = new Function('return (' + trimmedInput + ')')
-    const jsObject = func()
-
-    // Convert the JavaScript object to JSON string
+    // Parentheses make `{ a: 1 }` an object literal instead of a code block
+    const jsObject = new Function('return (' + trimmedInput + ')')()
     return JSON.stringify(jsObject, null, 2)
   } catch (error) {
     throw new Error('Invalid JavaScript object: ' + error.message)
   }
 }
 
-function getAllKeys(obj, prefix = '') {
-  let keys = []
+export function compareJSON(jsonA, jsonB) {
+  const keysA = getAllKeys(parseOrThrow(jsonA, 'A'))
+  const keysB = getAllKeys(parseOrThrow(jsonB, 'B'))
+  const setA = new Set(keysA)
+  const setB = new Set(keysB)
 
-  if (obj === null || typeof obj !== 'object') {
-    return []
+  const missingFromFirst = keysB.filter((key) => !setA.has(key))
+  const missingFromSecond = keysA.filter((key) => !setB.has(key))
+
+  return {
+    missingFromFirst,
+    missingFromSecond,
+    identical: missingFromFirst.length === 0 && missingFromSecond.length === 0
   }
+}
+// #endregion
 
-  if (Array.isArray(obj)) {
-    obj.forEach((item, index) => {
-      const newPrefix = prefix ? `${prefix}[${index}]` : `[${index}]`
-      keys.push(newPrefix)
-      keys = keys.concat(getAllKeys(item, newPrefix))
-    })
-  } else {
-    Object.keys(obj).forEach(key => {
-      const newPrefix = prefix ? `${prefix}.${key}` : key
-      keys.push(newPrefix)
-      keys = keys.concat(getAllKeys(obj[key], newPrefix))
-    })
+// #region Helpers
+function parseOrThrow(input, name = '') {
+  try {
+    return JSON.parse(input)
+  } catch (error) {
+    throw new Error(`Invalid JSON${name ? ' in ' + name : ''}: ${error.message}`)
   }
+}
 
+function getAllKeys(value, prefix = '') {
+  if (value === null || typeof value !== 'object') return []
+
+  const keys = []
+  const entries = Array.isArray(value)
+    ? value.map((item, index) => [`${prefix}[${index}]`, item])
+    : Object.keys(value).map((key) => [prefix ? `${prefix}.${key}` : key, value[key]])
+
+  for (const [path, child] of entries) {
+    keys.push(path)
+    keys.push(...getAllKeys(child, path))
+  }
   return keys
 }
+// #endregion

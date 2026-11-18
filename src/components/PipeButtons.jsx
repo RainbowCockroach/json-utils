@@ -1,43 +1,41 @@
-import { useNavigate } from 'react-router-dom'
+// "Send to" dropdown: hands the current output to another tool through sessionStorage.
 
-const FUNCTIONS = [
+// #region Setup
+import { useNavigate } from 'react-router-dom'
+// #endregion
+
+// #region Config
+const TARGETS = [
+  { path: '/format-json', label: 'Format' },
+  { path: '/minify-json', label: 'Minify' },
   { path: '/stringify', label: 'Stringify' },
   { path: '/parse', label: 'Parse' },
   { path: '/escape', label: 'Escape' },
   { path: '/unescape', label: 'Unescape' },
-  { path: '/compare', label: 'Compare' },
   { path: '/decode-url', label: 'Decode URL' },
-  { path: '/format-json', label: 'Format JSON' }
+  { path: '/js-to-json', label: 'JS → JSON' },
+  { path: '/compare', label: 'Compare' }
 ]
+// #endregion
 
-function PipeButtons({ output, currentPath, onCopy }) {
+// #region Dropdown
+function PipeButtons({ output, currentPath }) {
   const navigate = useNavigate()
 
-  const handlePipe = (targetPath) => {
-    // Store the output in sessionStorage to pass to the next page
+  const sendTo = (targetPath) => {
     sessionStorage.setItem('pipeInput', output)
     navigate(targetPath)
   }
 
-  const availableFunctions = FUNCTIONS.filter(func => func.path !== currentPath)
-
   return (
-    <div className="actions">
-      <button className="copy-button" onClick={onCopy}>
-        Copy to Clipboard
-      </button>
-      <span>Send to:</span>
-      {availableFunctions.map(func => (
-        <button
-          key={func.path}
-          className="pipe-button"
-          onClick={() => handlePipe(func.path)}
-        >
-          {func.label}
-        </button>
+    <select value="" disabled={!output} onChange={(event) => sendTo(event.target.value)}>
+      <option value="" disabled>Send to…</option>
+      {TARGETS.filter((target) => target.path !== currentPath).map((target) => (
+        <option key={target.path} value={target.path}>{target.label}</option>
       ))}
-    </div>
+    </select>
   )
 }
 
 export default PipeButtons
+// #endregion

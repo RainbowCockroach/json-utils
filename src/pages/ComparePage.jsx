@@ -1,126 +1,75 @@
-import { useState, useEffect } from 'react'
+// Compare two JSON documents and list the field paths each one is missing.
+// Three panes side by side: A, B, and the result. Updates as you type.
+
+// #region Setup
+import { useState, useMemo, useEffect } from 'react'
 import { compareJSON } from '../utils/jsonProcessors'
 import PipeButtons from '../components/PipeButtons'
+// #endregion
 
+// #region Page
 function ComparePage() {
-  const [input1, setInput1] = useState('')
-  const [input2, setInput2] = useState('')
-  const [output, setOutput] = useState('')
-  const [error, setError] = useState('')
+  const [inputA, setInputA] = useState(() => sessionStorage.getItem('pipeInput') ?? '')
+  const [inputB, setInputB] = useState('')
 
   useEffect(() => {
-    // Check if there's piped input from another function
-    const pipeInput = sessionStorage.getItem('pipeInput')
-    if (pipeInput) {
-      setInput1(pipeInput)
-      sessionStorage.removeItem('pipeInput')
-    }
+    sessionStorage.removeItem('pipeInput')
+    document.title = 'Compare · JSON Utils'
   }, [])
 
-  const handleProcess = () => {
-    setError('')
-    setOutput('')
+  const { output, error } = useMemo(() => {
+    if (!inputA.trim() || !inputB.trim()) return { output: '', error: '' }
 
-    if (!input1.trim()) {
-      setError('Please enter JSON in the first input')
-      return
-    }
-
-    if (!input2.trim()) {
-      setError('Please enter JSON in the second input')
-      return
-    }
-
+    let result
     try {
-      const result = compareJSON(input1, input2)
-
-      let outputText = ''
-
-      if (result.identical) {
-        outputText = 'The JSON objects are identical.'
-      } else {
-        outputText = 'JSON Comparison Results:\n\n'
-
-        if (result.missingFromFirst.length > 0) {
-          outputText += `Fields missing from Object A:\n${result.missingFromFirst.map(field => `- ${field}`).join('\n')}\n\n`
-        }
-
-        if (result.missingFromSecond.length > 0) {
-          outputText += `Fields missing from Object B:\n${result.missingFromSecond.map(field => `- ${field}`).join('\n')}`
-        }
-
-        if (result.missingFromFirst.length === 0 && result.missingFromSecond.length === 0) {
-          outputText += 'Both objects have the same structure.'
-        }
-      }
-
-      setOutput(outputText.trim())
-    } catch (err) {
-      setError(err.message)
+      result = compareJSON(inputA, inputB)
+    } catch (compareError) {
+      return { output: '', error: compareError.message }
     }
-  }
+    if (result.identical) return { output: 'Same fields in A and B.', error: '' }
 
-  const handleCopy = () => {
-    if (output) {
-      navigator.clipboard.writeText(output)
+    const lines = []
+    if (result.missingFromFirst.length > 0) {
+      lines.push(`Missing from A (${result.missingFromFirst.length}):`)
+      for (const field of result.missingFromFirst) lines.push(`  ${field}`)
+      lines.push('')
     }
-  }
+    if (result.missingFromSecond.length > 0) {
+      lines.push(`Missing from B (${result.missingFromSecond.length}):`)
+      for (const field of result.missingFromSecond) lines.push(`  ${field}`)
+    }
+    return { output: lines.join('\n').trim(), error: '' }
+  }, [inputA, inputB])
 
   return (
-    <div className="function-page">
-      <h2>Compare JSON</h2>
-      <p>Compare two JSON objects and see which fields are missing from each.</p>
-
-      <div className="compare-inputs">
-        <div className="input-section">
-          <label htmlFor="input1">JSON Object A:</label>
-          <textarea
-            id="input1"
-            className="json-textarea"
-            value={input1}
-            onChange={(e) => setInput1(e.target.value)}
-            placeholder='Enter first JSON object, e.g.: {"name": "John", "age": 30}'
-          />
-        </div>
-
-        <div className="input-section">
-          <label htmlFor="input2">JSON Object B:</label>
-          <textarea
-            id="input2"
-            className="json-textarea"
-            value={input2}
-            onChange={(e) => setInput2(e.target.value)}
-            placeholder='Enter second JSON object, e.g.: {"name": "Jane", "city": "NYC"}'
-          />
-        </div>
+    <div className="page">
+      <div className="toolbar">
+        <span className={error ? 'status error' : 'status'}>{error}</span>
+        <button onClick={() => navigator.clipboard.writeText(output)} disabled={!output}>Copy</button>
+        <PipeButtons output={output} currentPath="/compare" />
       </div>
 
-      {error && <div className="error-message">{error}</div>}
-
-      <button className="process-button" onClick={handleProcess}>
-        Compare JSON Objects
-      </button>
-
-      <div className="output-section">
-        <label htmlFor="output">Comparison Result:</label>
+      <div className="panes three">
         <textarea
-          id="output"
-          className="json-textarea"
-          value={output}
-          readOnly
-          placeholder="Comparison results will appear here..."
+          className="pane"
+          value={inputA}
+          onChange={(event) => setInputA(event.target.value)}
+          placeholder="A"
+          spellCheck={false}
+          autoFocus
         />
+        <textarea
+          className="pane"
+          value={inputB}
+          onChange={(event) => setInputB(event.target.value)}
+          placeholder="B"
+          spellCheck={false}
+        />
+        <textarea className="pane" value={output} readOnly placeholder="Result" spellCheck={false} />
       </div>
-
-      {output && (
-        <PipeButtons
-          output={output}
-          currentPath="/compare"
-          onCopy={handleCopy}
-        />
-      )}
     </div>
   )
 }
 
 export default ComparePage
+// #endregion
